@@ -232,14 +232,14 @@ def restore_lemmas(labeled_sentence):
     return retval
 
 class TextTagger:
-    def __init__(self, datapath = None, tokenizer_file = "omorfi_tokenize.pmatch", lookup_file = None,
+    def __init__(self, datapath = None, tokenizer_file = "omorfi_tokenize.pmatch", lookup_file = "omorfi.tagtools.optcap.hfst",
                  freq_words_file = "freq_words", model_file = "ftb.omorfi.model"):
         if datapath != None:
             if not os.path.isabs(tokenizer_file):
                 tokenizer_file = os.path.join(datapath, tokenizer_file)
                 if not os.path.isfile(tokenizer_file):
                     raise FileNotFoundError(tokenizer_file)
-            if lookup_file != None and not os.path.isabs(lookup_file):
+            if not os.path.isabs(lookup_file):
                 lookup_file = os.path.join(datapath, lookup_file)
                 if not os.path.isfile(lookup_file):
                     raise FileNotFoundError(lookup_file)
@@ -254,27 +254,25 @@ class TextTagger:
         for filename in (tokenizer_file, freq_words_file, model_file):
             if not os.path.isfile(filename):
                 raise FileNotFoundError(filename)
-        if (lookup_file) != None:
-            ls = hfst.HfstInputStream(lookup_file)
-            self.lookup = ls.read()
-            ls.close()
-        else:
-            self.lookup = None
+        ls = hfst.HfstInputStream(lookup_file)
+        self.lookup = ls.read()
+        ls.close()
         self.tokenizer = hfst.PmatchContainer(tokenizer_file)
         self.freq_words = set(open(freq_words_file).readlines())
         self.tagger = finnpos.Labeler()
         self.tagger.load_model(model_file)
 
-    def __call__(self, text_to_tag):
+    def __call__(self, text_to_tag,tokenize=True):
         retval = []
         sentences = []
         cohorts = []
-        if self.lookup != None:
+        if tokenize == False:
             tokens = text_to_tag.split("\n")
             for token in tokens:
                 if token=="":
-                    sentences.append(convert(cohorts))
-                    cohorts = []
+                    if len(cohorts) != 0:
+                        sentences.append(convert(cohorts))
+                        cohorts = []
                 else:
                     cohort = []
                     outputs = self.lookup.lookup(token)

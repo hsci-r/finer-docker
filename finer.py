@@ -14,8 +14,7 @@ class Finer:
         directory of a finnish-tagtools package.
         """
         self.datadir = datadir
-        self.postagger1 = omorfi_postag.TextTagger(self.datadir)
-        self.postagger2 = omorfi_postag.TextTagger(self.datadir,lookup_file="omorfi.tagtools.optcap.hfst")
+        self.postagger = omorfi_postag.TextTagger(self.datadir)
         self.p1_tagger = hfst.PmatchContainer(self.datadir + "/proper_tagger_ph1.pmatch")
         self.p2_tagger = hfst.PmatchContainer(self.datadir + "/proper_tagger_ph2.pmatch")
 
@@ -267,11 +266,7 @@ class Finer:
         Takes running (raw) text, returns list of sentences, each of which
         is a list of token-nertag pairs.
         """
-        if tokenize:
-            postagger = self.postagger1
-        else:
-            postagger = self.postagger2
-        pipeline = [postagger,
+        pipeline = [
                     self.format_for_nertag,
                     self.normalize_lemmas,
                     self.prefilt_tags,
@@ -281,6 +276,7 @@ class Finer:
                     self.proper_tag1,
                     self.move_tags,
                     self.remove_exc]
+        text = self.postagger(text,tokenize)
         for function in pipeline:
             text = function(text)
         sentences = []
