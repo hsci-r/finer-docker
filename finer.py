@@ -198,8 +198,27 @@ class Finer:
                     morph += '[CASE=NOM]'
             if surface == 'Juhani' and lemma == 'juha' and '[POSS=SG1]' in morph:
                 lemma = 'juhani'
-                idx = morpho.index('[CASE=')
-                morpho = morpho[:idx] + '[CASE=NOM]'
+                idx = morph.index('[CASE=')
+                morph = morph[:idx] + '[CASE=NOM]'
+            elif surface == 'Maria' and lemma == 'mari' and '[CASE=PAR]' in morph:
+                lemma = 'maria'
+                idx = morph.index('[CASE=')
+                morph = morph[:idx] + '[CASE=NOM]'
+            elif surface == 'Maritta' and lemma == 'mari' and '[CASE=ABE]' in morph:
+                lemma = 'maritta'
+                idx = morph.index('[CASE=')
+                morph = morph[:idx] + '[CASE=NOM]'
+            elif surface == 'Kansa' and lemma == 'ka' and '[POSS=3]' in morph:
+                lemma = 'kansa'
+                idx = morph.index('[CASE=')
+                morph = morph[:idx] + '[CASE=NOM]'
+            elif surface == 'Line' and lemma == 'li' and '[CASE=COM]' in morph:
+                lemma = 'line'
+                idx = morph.index('[CASE=')
+                morph = morph[:idx] + '[CASE=NOM]'
+            elif (surface == 'Noin' or surface == 'noin') and lemma == 'noki':
+                lemma = 'noin'
+                morph = '[POS=PARTICLE][SUBCAT=ADVERB]'
             return (surface, lemma, morph, sem)
         # -e 's/^Maria\t[^\t]+\t(.*)\[CASE=PAR\]/Maria\tMaria\t\1[CASE=NOM]/' \
         # -e 's/^Maritta\t[^\t]+\t(.*)\[CASE=ABE\]/Maritta\tMaritta\t\1[CASE=NOM]/' \
