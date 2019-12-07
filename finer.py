@@ -273,7 +273,7 @@ class Finer:
                     self.add_boundaries,
                     self.proper_tag1,
                     self.move_tags,
-                    self.proper_tag1,
+                    self.proper_tag2,
                     self.move_tags,
                     self.remove_exc]
         text = self.postagger(text,tokenize)
